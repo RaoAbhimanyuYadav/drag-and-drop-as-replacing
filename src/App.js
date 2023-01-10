@@ -1,6 +1,84 @@
 import { useRef, useState } from "react";
 import "./App.css";
 
+const timeTable = [
+  {
+    semester: 1,
+    timings: [
+      {
+        id: 1,
+        day: "Monday",
+        slots: [
+          { id: 1, time: "10:00-11:00", course: "EC-101" },
+          { id: 2, time: "10:00-11:00", course: "EC-102" },
+          { id: 3, time: "10:00-11:00", course: "EC-103" },
+          { id: 4, time: "10:00-11:00", course: "EC-104" },
+          { id: 5, time: "10:00-11:00", course: "EC-105" },
+          { id: 6, time: "10:00-11:00", course: "EC-106" },
+          { id: 7, time: "10:00-11:00", course: "EC-107" },
+          { id: 8, time: "10:00-11:00", course: "EC-108" },
+        ],
+      },
+      {
+        id: 2,
+        day: "Tuesday",
+        slots: [
+          { id: 1, time: "10:00-11:00", course: "EC-101" },
+          { id: 2, time: "10:00-11:00", course: "EC-102" },
+          { id: 3, time: "10:00-11:00", course: "EC-103" },
+          { id: 4, time: "10:00-11:00", course: "EC-104" },
+          { id: 5, time: "10:00-11:00", course: "EC-105" },
+          { id: 6, time: "10:00-11:00", course: "EC-106" },
+          { id: 7, time: "10:00-11:00", course: "EC-107" },
+          { id: 8, time: "10:00-11:00", course: "EC-108" },
+        ],
+      },
+      {
+        id: 4,
+        day: "Thrusday",
+        slots: [
+          { id: 1, time: "10:00-11:00", course: "EC-101" },
+          { id: 2, time: "10:00-11:00", course: "EC-102" },
+          { id: 3, time: "10:00-11:00", course: "EC-103" },
+          { id: 4, time: "10:00-11:00", course: "EC-104" },
+          { id: 5, time: "10:00-11:00", course: "EC-105" },
+          { id: 6, time: "10:00-11:00", course: "EC-106" },
+          { id: 7, time: "10:00-11:00", course: "EC-107" },
+          { id: 8, time: "10:00-11:00", course: "EC-108" },
+        ],
+      },
+      {
+        id: 5,
+        day: "Friday",
+        slots: [
+          { id: 1, time: "10:00-11:00", course: "EC-101" },
+          { id: 2, time: "10:00-11:00", course: "EC-102" },
+          { id: 3, time: "10:00-11:00", course: "EC-103" },
+          { id: 4, time: "10:00-11:00", course: "EC-104" },
+          { id: 5, time: "10:00-11:00", course: "EC-105" },
+          { id: 6, time: "10:00-11:00", course: "EC-106" },
+          { id: 7, time: "10:00-11:00", course: "EC-107" },
+          { id: 8, time: "10:00-11:00", course: "EC-108" },
+        ],
+      },
+      {
+        id: 3,
+        day: "Wednesday",
+        slots: [
+          { id: 1, time: "10:00-11:00", course: "EC-101" },
+          { id: 2, time: "10:00-11:00", course: "EC-102" },
+          { id: 3, time: "10:00-11:00", course: "EC-103" },
+          { id: 4, time: "10:00-11:00", course: "EC-104" },
+          { id: 5, time: "10:00-11:00", course: "EC-105" },
+          { id: 6, time: "10:00-11:00", course: "EC-106" },
+          { id: 7, time: "10:00-11:00", course: "EC-107" },
+          { id: 8, time: "10:00-11:00", course: "EC-108" },
+        ],
+      },
+    ],
+  },
+];
+
 const App = () => {
   const containerRef = useRef(null);
   const [dragEle, setDragEle] = useState(null);
@@ -57,7 +135,65 @@ const App = () => {
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
-        <p style={{ color: "green" }}> A</p>
+        <div style={{ pointerEvents: "none" }}>
+          <div>
+            <div>
+              <p
+                style={{
+                  color: "green",
+                  border: "1px solid black",
+                }}
+              >
+                {" "}
+                A
+              </p>
+              <p
+                style={{
+                  color: "green",
+                  border: "1px solid black",
+                }}
+              >
+                {" "}
+                A
+              </p>
+              <p
+                style={{
+                  color: "green",
+                  border: "1px solid black",
+                }}
+              >
+                {" "}
+                A
+              </p>
+              <p
+                style={{
+                  color: "green",
+                }}
+              >
+                {" "}
+                A
+              </p>
+            </div>
+            <p
+              style={{
+                color: "green",
+                border: "1px solid black",
+              }}
+            >
+              {" "}
+              A
+            </p>
+            <p
+              style={{
+                color: "green",
+                border: "1px solid black",
+              }}
+            >
+              {" "}
+              A
+            </p>
+          </div>
+        </div>
       </div>
       <div
         draggable="true"

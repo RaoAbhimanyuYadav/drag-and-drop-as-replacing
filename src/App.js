@@ -1,10 +1,16 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import "./App.css";
 
-const timeTable = [
+const t = [
   {
     semester: 1,
     timings: [
+      {
+        id: 0,
+        day: "",
+        slots: [],
+      },
       {
         id: 1,
         day: "Monday",
@@ -23,56 +29,14 @@ const timeTable = [
         id: 2,
         day: "Tuesday",
         slots: [
-          { id: 1, time: "10:00-11:00", course: "EC-101" },
-          { id: 2, time: "10:00-11:00", course: "EC-102" },
-          { id: 3, time: "10:00-11:00", course: "EC-103" },
-          { id: 4, time: "10:00-11:00", course: "EC-104" },
-          { id: 5, time: "10:00-11:00", course: "EC-105" },
-          { id: 6, time: "10:00-11:00", course: "EC-106" },
-          { id: 7, time: "10:00-11:00", course: "EC-107" },
-          { id: 8, time: "10:00-11:00", course: "EC-108" },
-        ],
-      },
-      {
-        id: 4,
-        day: "Thrusday",
-        slots: [
-          { id: 1, time: "10:00-11:00", course: "EC-101" },
-          { id: 2, time: "10:00-11:00", course: "EC-102" },
-          { id: 3, time: "10:00-11:00", course: "EC-103" },
-          { id: 4, time: "10:00-11:00", course: "EC-104" },
-          { id: 5, time: "10:00-11:00", course: "EC-105" },
-          { id: 6, time: "10:00-11:00", course: "EC-106" },
-          { id: 7, time: "10:00-11:00", course: "EC-107" },
-          { id: 8, time: "10:00-11:00", course: "EC-108" },
-        ],
-      },
-      {
-        id: 5,
-        day: "Friday",
-        slots: [
-          { id: 1, time: "10:00-11:00", course: "EC-101" },
-          { id: 2, time: "10:00-11:00", course: "EC-102" },
-          { id: 3, time: "10:00-11:00", course: "EC-103" },
-          { id: 4, time: "10:00-11:00", course: "EC-104" },
-          { id: 5, time: "10:00-11:00", course: "EC-105" },
-          { id: 6, time: "10:00-11:00", course: "EC-106" },
-          { id: 7, time: "10:00-11:00", course: "EC-107" },
-          { id: 8, time: "10:00-11:00", course: "EC-108" },
-        ],
-      },
-      {
-        id: 3,
-        day: "Wednesday",
-        slots: [
-          { id: 1, time: "10:00-11:00", course: "EC-101" },
-          { id: 2, time: "10:00-11:00", course: "EC-102" },
-          { id: 3, time: "10:00-11:00", course: "EC-103" },
-          { id: 4, time: "10:00-11:00", course: "EC-104" },
-          { id: 5, time: "10:00-11:00", course: "EC-105" },
-          { id: 6, time: "10:00-11:00", course: "EC-106" },
-          { id: 7, time: "10:00-11:00", course: "EC-107" },
-          { id: 8, time: "10:00-11:00", course: "EC-108" },
+          { id: 11, time: "10:00-11:00", course: "EC-101" },
+          { id: 12, time: "10:00-11:00", course: "EC-102" },
+          { id: 13, time: "10:00-11:00", course: "EC-103" },
+          { id: 14, time: "10:00-11:00", course: "EC-104" },
+          { id: 15, time: "10:00-11:00", course: "EC-105" },
+          { id: 16, time: "10:00-11:00", course: "EC-106" },
+          { id: 17, time: "10:00-11:00", course: "EC-107" },
+          { id: 18, time: "10:00-11:00", course: "EC-108" },
         ],
       },
     ],
@@ -80,146 +44,128 @@ const timeTable = [
 ];
 
 const App = () => {
-  const containerRef = useRef(null);
-  const [dragEle, setDragEle] = useState(null);
-
-  function handleDragStart(e) {
-    setDragEle(e);
-    e.target.style.opacity = "0.1";
-    console.log("start");
-    e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/html", e.target.innerHTML);
-  }
-
-  function handleDragEnd(e) {
-    e.target.style.opacity = "1";
-    console.log("end");
-    [...containerRef.current.children].forEach((element) => {
-      element.classList.remove("over");
-    });
-  }
-
-  function handleDragEnter(e) {
-    e.target.classList.add("over");
-    console.log("enter");
-  }
-
-  function handleDragLeave(e) {
-    e.target.classList.remove("over");
-    console.log("leave");
-  }
-
-  function handleDragOver(e) {
-    e.preventDefault();
-    console.log("Over");
-    return false;
-  }
-
-  function handleDrop(e) {
-    e.stopPropagation(); // stops the browser from redirecting.
-    console.log("drop");
-    dragEle.target.innerHTML = e.target.innerHTML;
-    e.target.innerHTML = e.dataTransfer.getData("text/html");
-    return false;
-  }
+  const [timeTable, setTimeTable] = useState(t);
+  const handleDragEnd = (result) => {
+    console.log(result);
+    const { destination, source } = result;
+    if (!destination) {
+      return;
+    }
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+    let timetableCopy = timeTable;
+    let sem = 0;
+    let semData = timetableCopy[sem];
+    let timingStartIndex = +source.droppableId;
+    let timingEndIndex = +destination.droppableId;
+    let slotStartIndex = source.index;
+    let slotEndIndex = destination.index;
+    let startTotalItems =
+      timetableCopy[sem].timings[timingStartIndex].slots.length;
+    let endTotalItems = timetableCopy[sem].timings[timingEndIndex].slots.length;
+    console.log(
+      timingStartIndex,
+      timingEndIndex,
+      slotStartIndex,
+      slotEndIndex,
+      startTotalItems,
+      endTotalItems
+    );
+    let startEle = semData.timings[timingStartIndex].slots[slotStartIndex];
+    if (slotEndIndex >= endTotalItems) {
+      slotEndIndex = endTotalItems - 1;
+    }
+    let endEle = semData.timings[timingEndIndex].slots[slotEndIndex];
+    timetableCopy[sem].timings[timingStartIndex].slots.splice(
+      slotStartIndex,
+      1
+    );
+    timetableCopy[sem].timings[timingEndIndex].slots.splice(slotEndIndex, 1);
+    timetableCopy[sem].timings[timingStartIndex].slots.splice(
+      slotStartIndex,
+      0,
+      endEle
+    );
+    timetableCopy[sem].timings[timingEndIndex].slots.splice(
+      slotEndIndex,
+      0,
+      startEle
+    );
+    setTimeTable(timetableCopy);
+  };
 
   return (
-    <div className="container" ref={containerRef}>
-      <div
-        draggable="true"
-        className="box"
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        <div style={{ pointerEvents: "none" }}>
-          <div>
-            <div>
-              <p
-                style={{
-                  color: "green",
-                  border: "1px solid black",
-                }}
-              >
-                {" "}
-                A
-              </p>
-              <p
-                style={{
-                  color: "green",
-                  border: "1px solid black",
-                }}
-              >
-                {" "}
-                A
-              </p>
-              <p
-                style={{
-                  color: "green",
-                  border: "1px solid black",
-                }}
-              >
-                {" "}
-                A
-              </p>
-              <p
-                style={{
-                  color: "green",
-                }}
-              >
-                {" "}
-                A
-              </p>
+    <>
+      {timeTable.map((sem, semInd) => (
+        <DragDropContext
+          onDragEnd={handleDragEnd}
+          onDragStart={(e) => {
+            console.log(e);
+          }}
+          key={semInd}
+        >
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <div
+              style={{
+                width: "1200px",
+                height: "800px",
+                border: "5px solid blue",
+                display: "flex",
+              }}
+            >
+              {sem.timings.map((day, dayInd) => (
+                <Droppable droppableId={day.id.toString()} key={dayInd}>
+                  {(provided, snapshot) => (
+                    <div
+                      className={snapshot.isDraggingOver ? "dragactive" : ""}
+                      style={{
+                        width: "180px",
+                        height: "790px",
+                        border: "3px solid green",
+                        display: "inline-block",
+                      }}
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                    >
+                      {day.slots.map((slot, index) => (
+                        <Draggable
+                          draggableId={slot.id.toString()}
+                          index={index}
+                          key={slot.id.toString()}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              ref={provided.innerRef}
+                              className={snapshot.isDragging ? "drag" : ""}
+                              style={{
+                                width: "100px",
+                                height: "60px",
+                                border: "1px solid black",
+                                display: "inline-block",
+                                ...provided.draggableProps.style,
+                              }}
+                            >
+                              {slot.course}
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              ))}
             </div>
-            <p
-              style={{
-                color: "green",
-                border: "1px solid black",
-              }}
-            >
-              {" "}
-              A
-            </p>
-            <p
-              style={{
-                color: "green",
-                border: "1px solid black",
-              }}
-            >
-              {" "}
-              A
-            </p>
           </div>
-        </div>
-      </div>
-      <div
-        draggable="true"
-        className="box"
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        B
-      </div>
-      <div
-        draggable="true"
-        className="box"
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        C
-      </div>
-    </div>
+        </DragDropContext>
+      ))}
+    </>
   );
 };
 
